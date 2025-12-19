@@ -36,9 +36,11 @@ RUN go mod tidy
 # Build binary
 RUN go build -o webshot .
 
-# Create non-root user for security
-RUN groupadd -r appuser && useradd -r -g appuser appuser && \
-    chown -R appuser:appuser /app
+# Create non-root user with home directory for Chrome to use
+RUN groupadd -r appuser && useradd -r -m -g appuser appuser && \
+    chown -R appuser:appuser /app && \
+    mkdir -p /home/appuser/.local/share && \
+    chown -R appuser:appuser /home/appuser
 
 USER appuser
 
