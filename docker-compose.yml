@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  webshot:
+    build: .
+    container_name: webshot-service
+    ports:
+      - "8080:8080"
+    environment:
+      # Worker pool configuration
+      MAX_CHROME_WORKERS: 20          # Number of concurrent Chrome instances
+      SCREENSHOT_TIMEOUT: 45           # Timeout per screenshot (seconds)
+      WORKER_TIMEOUT: 15               # Timeout to acquire worker (seconds)
+      
+      # Cache configuration
+      CACHE_ENABLED: true              # Enable response caching
+      CACHE_DURATION_SECONDS: 300      # Cache TTL (5 minutes)
+    
+    # Resource limits - adjust based on your server
+    deploy:
+      resources:
+        limits:
+          cpus: '4'                     # Maximum CPU cores
+          memory: 4G                    # Maximum memory
+        reservations:
+          cpus: '2'                     # Reserved CPU cores
+          memory: 2G                    # Reserved memory
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    
+    # Restart policy
+    restart: unless-stopped
+    
+    # Security
+    security_opt:
+      - no-new-privileges:true
+    
+    # Shared memory size (important for Chrome)
+    shm_size: '512m'

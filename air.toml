@@ -1,0 +1,16 @@
+# .air.toml
+
+[build]
+  bin = "main"              # Nome do binário gerado
+  cmd = "go build -o main"  # Comando para construir o binário
+  include = ["*.go"]       # Arquivos para monitorar
+  exclude = ["static/*", "models/*", "cmd/*"]   # Arquivos ou diretórios para ignorar
+
+[log]
+  time = true              # Adiciona timestamps aos logs
+
+[color]
+  main = "yellow"
+  build = "cyan"
+  watcher = "blue"
+  log = "green"
